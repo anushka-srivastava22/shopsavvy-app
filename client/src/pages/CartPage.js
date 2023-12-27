@@ -5,9 +5,10 @@ import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import { AiFillWarning } from "react-icons/ai";
+import { Card, CardBody, CardFooter, Button, Text, Image, Stack, Heading } from '@chakra-ui/react';
 import axios from "axios";
 import toast from "react-hot-toast";
-import "../styles/CartStyles.css";
+//import "../styles/CartStyles.css";
 
 const CartPage = () => {
   const [auth, setAuth] = useAuth();
@@ -82,32 +83,61 @@ const CartPage = () => {
       <div className=" cart-page">
         <div className="row">
           <div className="col-md-12">
-            <h1 className="text-center bg-light p-2 mb-1">
+            <Heading size='lg' className="text-center bg-light p-2 mb-1">
               {!auth?.user
                 ? "Hello Guest"
                 : `Hello  ${auth?.token && auth?.user?.name}`}
-              <p className="text-center">
+              <Text className="text-center">
                 {cart?.length
-                  ? `You Have ${cart.length} items in your cart ${
-                      auth?.token ? "" : "please login to checkout !"
-                    }`
+                  ? `You Have ${cart.length} items in your cart ${auth?.token ? "" : "please login to checkout !"
+                  }`
                   : " Your Cart Is Empty"}
-              </p>
-            </h1>
+              </Text>
+            </Heading>
           </div>
         </div>
         <div className="container ">
-          <div className="row ">
-            <div className="col-md-7  p-0 m-0">
+          <div className="row " >
+            <div className="col-md-7  ">
               {cart?.map((p) => (
-                <div className="row card flex-row" key={p._id}>
-                  <div className="col-md-4">
+                <div className="row card flex-row mt-2 mb-2" key={p._id}>
+                  <Card
+                    direction={{ base: 'column', sm: 'row' }}
+                    overflow='hidden'
+                    variant='outline'
+                  >
+                    <Image
+                      objectFit='cover'
+                      maxW={{ base: '100%', sm: '200px' }}
+                      src={`/api/v1/product/product-photo/${p._id}`}
+                      className="card-img-top "
+                      alt={p.name}
+                    />
+
+                    <Stack>
+                      <CardBody>
+                        <Heading size='md'>{p.name}</Heading>
+
+                        <Text py='2'>
+                        {p.description.substring(0, 30)}
+                        <br/>
+                        Price : {p.price}
+                        </Text>
+                      </CardBody>
+
+                      <CardFooter>
+                        <Button variant='solid' colorScheme='red' onClick={() => removeCartItem(p._id)}>
+                          Remove
+                        </Button>
+                      </CardFooter>
+                    </Stack>
+                  </Card>
+                  {/* <div className="col-md-4">
                     <img
                       src={`/api/v1/product/product-photo/${p._id}`}
-                      className="card-img-top"
+                      className="card-img-top "
                       alt={p.name}
-                      width="100%"
-                      height={"130px"}
+
                     />
                   </div>
                   <div className="col-md-4">
@@ -122,39 +152,39 @@ const CartPage = () => {
                     >
                       Remove
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
-            <div className="col-md-5 cart-summary ">
-              <h2>Cart Summary</h2>
-              <p>Total | Checkout | Payment</p>
+            <div className="col-md-5 cart-summary text-center">
+              <Heading>Cart Summary</Heading>
+              <Text>Total | Checkout | Payment</Text>
               <hr />
-              <h4>Total : {totalPrice()} </h4>
+              <Heading size='md'>Total : {totalPrice()} </Heading>
               {auth?.user?.address ? (
                 <>
                   <div className="mb-3">
-                    <h4>Current Address</h4>
-                    <h5>{auth?.user?.address}</h5>
-                    <button
+                    <Heading size='md'>Current Address</Heading>
+                    <Heading size='md'>{auth?.user?.address}</Heading>
+                    <Button
                       className="btn btn-outline-warning"
                       onClick={() => navigate("/dashboard/user/profile")}
                     >
                       Update Address
-                    </button>
+                    </Button>
                   </div>
                 </>
               ) : (
                 <div className="mb-3">
                   {auth?.token ? (
-                    <button
+                    <Button variant="solid" colorScheme="blue"
                       className="btn btn-outline-warning"
                       onClick={() => navigate("/dashboard/user/profile")}
                     >
                       Update Address
-                    </button>
+                    </Button>
                   ) : (
-                    <button
+                    <Button variant="solid" colorScheme="blue"
                       className="btn btn-outline-warning"
                       onClick={() =>
                         navigate("/login", {
@@ -163,7 +193,7 @@ const CartPage = () => {
                       }
                     >
                       Plase Login to checkout
-                    </button>
+                    </Button>
                   )}
                 </div>
               )}
@@ -182,13 +212,13 @@ const CartPage = () => {
                       onInstance={(instance) => setInstance(instance)}
                     />
 
-                    <button
+                    <Button variant="solid" colorScheme="blue"
                       className="btn btn-primary"
                       onClick={handlePayment}
                       disabled={loading || !instance || !auth?.user?.address}
                     >
                       {loading ? "Processing ...." : "Make Payment"}
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>

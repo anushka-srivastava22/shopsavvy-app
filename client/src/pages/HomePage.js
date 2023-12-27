@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Checkbox, Radio } from "antd";
+//import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
 import { useCart } from "../context/cart";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Layout from "./../components/Layout/Layout";
 import { AiOutlineReload } from "react-icons/ai";
-import "../styles/Homepage.css";
+//import "../styles/Homepage.css";
+import { Card, Checkbox,Radio,RadioGroup, CardBody, CardFooter, Button, Text, Divider, ButtonGroup, Image, Stack, Heading } from '@chakra-ui/react'
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -116,9 +117,10 @@ const HomePage = () => {
         width={"100%"}
       />
       {/* banner image */}
+
       <div className="container-fluid row mt-3 home-page">
-        <div className="col-md-3 filters">
-          <h4 className="text-center">Filter By Category</h4>
+        <div className="col-md-3 filters mt-5 pt-4">
+          <Heading as="h4" size="md" className="text-center">Filter By Category</Heading>
           <div className="d-flex flex-column">
             {categories?.map((c) => (
               <Checkbox
@@ -130,71 +132,115 @@ const HomePage = () => {
             ))}
           </div>
           {/* price filter */}
-          <h4 className="text-center mt-4">Filter By Price</h4>
+          <Heading as="h4" size="md" className="text-center mt-4">Filter By Price</Heading>
           <div className="d-flex flex-column">
-            <Radio.Group onChange={(e) => setRadio(e.target.value)}>
+            <RadioGroup onChange={(e) => setRadio(e.target.value)}>
               {Prices?.map((p) => (
                 <div key={p._id}>
                   <Radio value={p.array}>{p.name}</Radio>
                 </div>
               ))}
-            </Radio.Group>
+            </RadioGroup>
           </div>
-          <div className="d-flex flex-column">
-            <button
+          <div className="d-flex flex-column mt-3">
+            <Button variant='solid' colorScheme='red'
               className="btn btn-danger"
               onClick={() => window.location.reload()}
             >
               RESET FILTERS
-            </button>
+            </Button>
           </div>
         </div>
         <div className="col-md-9 ">
           <h1 className="text-center">All Products</h1>
           <div className="d-flex flex-wrap">
             {products?.map((p) => (
-              <div className="card m-2" key={p._id}>
-                <img
-                  src={`/api/v1/product/product-photo/${p._id}`}
-                  className="card-img-top"
-                  alt={p.name}
-                />
-                <div className="card-body">
-                  <div className="card-name-price">
-                    <h5 className="card-title">{p.name}</h5>
-                    <h5 className="card-title card-price">
-                      {p.price.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      })}
-                    </h5>
-                  </div>
-                  <p className="card-text ">
-                    {p.description.substring(0, 60)}...
-                  </p>
-                  <div className="card-name-price">
-                    <button
-                      className="btn btn-info ms-1"
-                      onClick={() => navigate(`/product/${p.slug}`)}
-                    >
-                      More Details
-                    </button>
-                    <button
-                      className="btn btn-dark ms-1"
-                      onClick={() => {
+              <div className="card w-25 m-2 mx-4 p-2" key={p._id}>
+
+                <Card maxW='sm'>
+                  <CardBody>
+                    <Image
+                      src={`/api/v1/product/product-photo/${p._id}`}
+                      className="card-img-top"
+                      alt={p.name}
+                      borderRadius='lg'
+                    />
+                    <Stack mt='6' spacing='3'>
+                      <Heading size='md'>{p.name}</Heading>
+                      <Text>
+                        {p.description.substring(0, 60)}...
+                      </Text>
+                      <Text color='blue.600' fontSize='2xl'>
+                        {p.price.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                      </Text>
+                    </Stack>
+                  </CardBody>
+                  <Divider />
+                  <CardFooter>
+                    <ButtonGroup spacing='2'>
+                      <Button variant='solid' colorScheme='blue' onClick={() => navigate(`/product/${p.slug}`)}>
+                        More Details
+                      </Button>
+                      <Button variant='ghost' colorScheme='blue' onClick={() => {
                         setCart([...cart, p]);
                         localStorage.setItem(
                           "cart",
                           JSON.stringify([...cart, p])
                         );
                         toast.success("Item Added to cart");
-                      }}
-                    >
-                      ADD TO CART
-                    </button>
-                  </div>
-                </div>
+                      }}>
+                        Add to cart
+                      </Button>
+                    </ButtonGroup>
+                  </CardFooter>
+                </Card>
+
               </div>
+              //     <div className="card m-2" key={p._id}>
+              //       <img
+              //         src={`/api/v1/product/product-photo/${p._id}`}
+              //         className="card-img-top"
+              //         alt={p.name}
+              //       />
+              //       <div className="card-body">
+              //         <div className="card-name-price">
+              //           <h5 className="card-title">{p.name}</h5>
+              //           <h5 className="card-title card-price">
+              //             {p.price.toLocaleString("en-US", {
+              //               style: "currency",
+              //               currency: "USD",
+              //             })}
+              //           </h5>
+              //         </div>
+              //         <p className="card-text ">
+              //           {p.description.substring(0, 60)}...
+              //         </p>
+              //         <div className="card-name-price">
+              //           <button
+              //             className="btn btn-info ms-1"
+              //             onClick={() => navigate(`/product/${p.slug}`)}
+              //           >
+              //             More Details
+              //           </button>
+              //           <button
+              //             className="btn btn-dark ms-1"
+              //             onClick={() => {
+              //               setCart([...cart, p]);
+              //               localStorage.setItem(
+              //                 "cart",
+              //                 JSON.stringify([...cart, p])
+              //               );
+              //               toast.success("Item Added to cart");
+              //             }}
+              //           >
+              //             ADD TO CART
+              //           </button>
+              //         </div>
+              //       </div>
+              //     </div>
             ))}
           </div>
           <div className="m-2 p-3">
